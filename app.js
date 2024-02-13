@@ -4,19 +4,17 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const ejs = require('ejs');
 const mongoose = require("mongoose");
-// const encrypt = require("mongoose-encryption");
-// const md5 = require ("md5");
-// const bcrypt = require ("bcrypt");
-// const saltRounds = 10;
+const multer = require('multer');
 const session = require('express-session');
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
- 
+const path = require('path');
 
 const app = express();
  
+
 app.use(express.static("public"));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -74,6 +72,23 @@ passport.use(new GoogleStrategy({
     });
   }
 ));
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // Directory where uploaded files will be stored
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname)); // Unique filename with original extension
+    }
+});
+
+// Create multer instance with storage configuration
+const upload = multer({ storage: storage });
+
+// Define route for handling file uploads
+app.post('/upload', upload.single('picture'), (req, res) => {
+    const filename = req.file.filename;
+    res.send(`Picture uploaded successfully! Filename: ${filename}`);
+});
 
 app.get("/", function(req, res){
     res.render("home");

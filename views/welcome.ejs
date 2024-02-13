@@ -3,7 +3,13 @@
 <div class="jumbotron text-center">
   <div class="container">
 
-    <h1 class="display-3">You've been logged in!</h1>
+    <h1 class="display-3">Please upload your picture here!</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <input type="file" name="picture" class="form-control-file" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
     
     <hr>
     
